@@ -1,0 +1,74 @@
+﻿
+@model BlogVM
+
+
+
+
+@section Links{
+
+    <link rel="stylesheet" href="~/assets/css/blog/blog.css">
+    <title>Blog</title>
+} 
+
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<main>
+    <section id="top-column-content">
+        <div class="column-content">
+            <div class="title">
+                <h2>News</h2>
+            </div>
+            <div class="choose">
+                 <a asp-controller="Home" asp-action="Index">Home |</a>
+                <span>Blog</span>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="product-blog">
+
+        <div class="blog mt-5">
+            <div class="container">
+
+                <div class="row">
+                     <partial name="_BlogListPartial" model="Model.PaginateDatas.Datas"/>
+
+                    <nav class="paginate-area mt-5" aria-label="...">
+                        <ul class="pagination">
+                            <li class="page-item @(Model.PaginateDatas.HasPrevious ? " " : "d-none")">
+                                <a asp-action="Index" asp-route-page="@(Model.PaginateDatas.CurrentPage - 1)">
+                                    <span class="page-link @(Model.PaginateDatas.HasNext ? " " : "disabled")">Previous</span>
+                                </a>
+                            </li>
+                            @for (int i = 1; i <= Model.PaginateDatas.TotalPage; i++)
+                            {
+                                <li class="page-item  @(Model.PaginateDatas.CurrentPage == i ? "disabled" : "") ">
+                                    <a asp-action="Index" asp-route-page="@i"><span class="page-link">@i</span></a>
+                                </li>
+                            }
+                            <li class="page-item @(Model.PaginateDatas.HasNext ? " " : "disabled")">
+                                <a asp-action="Index" asp-route-page="@(Model.PaginateDatas.CurrentPage + 1)" class="page-link next-blog ">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+
+
+@section Script{
+
+    <script src="~/assets/js/blog.js"></script>
+ }
+
+

@@ -1,0 +1,377 @@
+﻿
+@model  ProductDetailVM
+@inject UserManager<AppUser> userManager
+
+@section Links{
+
+    <link rel="stylesheet" href="~/assets/css/product-details/product-details.css">
+    <title>Shop</title>
+}
+
+
+@{
+    ViewData["Title"] = "ProductDetail";
+}
+
+
+
+<main>
+
+    <section id="top-column-content">
+        <div class="column-content">
+            <div class="title">
+                <h2>Product</h2>
+            </div>
+            <div class="choose">
+                <a asp-controller="Home" asp-action="Index">Home |</a>
+                <span>@Model.ProductName</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="product-details-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="product-details-inner mt-5">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="product-img">
+                                    @if (@Model.Video == null)
+                                    {
+                                        <img src="~/assets/img/shoes/product-img/@Model.ProductImages.FirstOrDefault(m => m.IsMain)?.ImgName"
+                                         alt="Product Image" />
+                                    }else{
+                                        <video playsinline="" loop="" muted="" autoplay="" poster="" class="product-grid__video" src="@Model.Video" type="video/mp4">
+                                        </video>
+                                    }
+                                 
+                                    
+                               
+
+                                </div>
+                                <div class="small-carousel">
+                                    <section class="slider">
+                                        <button class="slider__control prev">
+                                            <i class="fa-solid fa-chevron-left"></i>
+                                        </button>
+                                        <button class="slider__control next">
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                        </button>
+                                        <div class="slider__container" data-multislide="true" data-step="4">
+
+                                            @foreach (var productImage in Model.ProductImages)
+                                            {
+                                                <div class="slider__item">
+                                                    <img src="~/assets/img/shoes/product-img/@productImage.ImgName" alt="" width="100%">
+                                                </div>
+
+                                            }
+
+
+                                        </div>
+                                    </section>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-7">
+                                <div class="product-details-des">
+                                    <div class="pro-det-title">
+                                        <h3>@Model.ProductName</h3>
+                                    </div>
+                                    <div class="star-product">
+                                        @for (int m = 0; m < Model.Rating; m++)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        @for (int c = 0; c < 5 - Model.Rating; c++)
+                                        {
+                                            <i class="bi bi-star"></i>
+                                        }
+                                    </div>
+                                    <div class="pro-price">
+                                        <span class="regular-price">$ @Model.DiscountPrice</span>
+                                        <span class=""><del>$@Model.Price</del></span>
+                                    </div>
+                                    <div class="pro-desc">
+                                        <p>
+                                          @Model.Description
+                                        </p>
+                                    </div>
+
+                                    <div class="pro-type">
+                                        <span class="type-title">Sku</span>
+                                        <span class="pro-variant-sku">: @Model.SKU</span>
+                                    </div>
+                                    <div class="pro-type">
+                                        <span class="type-title">Categorie</span>
+                                        <span class="pro-variant-sku">: @Model.SubCategories.Name</span>
+                                    </div>
+                                    <div class="pro-type">
+                                        <span class="type-title">Brand</span>
+                                        <span class="pro-variant-text">: @Model.BrandName</span>
+                                    </div>
+                                    <div class="pro-type-size">
+                                        <span class="type-title">Size</span>
+                                        <div class="shoes-size">
+                                            <select style="outline:none;">
+                                                <option value="size">Select Size</option>
+                                                @foreach (var item in Model.ProductSizes)
+                                                {
+                                                    <option value="size">@item.Size.Number</option>
+                                                }
+                                            </select>
+                                           
+                                           
+                                        </div>
+                                    </div>
+                                    <div class="pro-type-color">
+                                        <span class="type-title">Color</span>
+                                        <div class="shoes-color">
+                                            @foreach (var item in Model.ProductColors)
+                                            {
+                                                <span style="background-color: @item.Color.Name;" class="product-color active"></span>
+                                            }
+                                          
+                                        </div>
+                                    </div>
+
+                                    <div class="pro-type-quantity">
+                                        <span class="type-title">Quantity</span>
+                                        <div class="number">
+                                            <span id="minusButton" class="minus">-</span>
+                                            <input type="text" id="quantityInput" value="1" />
+                                            <span id="plusButton" class="plus">+</span>
+                                        </div>
+                                    </div>
+
+
+
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <div class="add-buttons">
+                                            <div class="click-btn right">
+                                                <a class="add-to-cart-btn" data-id="@Model.Id">
+                                                    <button type="button" class="btn btn-warning">ADD TO CARD</button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }else
+                                    {
+                                        <div class="add-buttons">
+                                            <div class="click-btn right">
+                                                <a asp-controller="Account" asp-action="Login">
+                                                    <button type="button" class="btn btn-warning">ADD TO CARD</button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    }
+                                 
+
+                                </div>
+                                <div class="product-accordion">
+                                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingOne">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                                                        aria-expanded="false" aria-controls="flush-collapseOne">
+                                                    <i class="fa-solid fa-truck-fast"></i>
+                                                    <h4>Shipping & Returns</h4>
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseOne" class="accordion-collapse collapse"
+                                                 aria-labelledby="flush-headingOne"
+                                                 data-bs-parent="#accordionFlushExample">
+                                                <div class="accordion-body">
+                                                    <p>
+                                                        Free shipping and returns available on all orders!
+                                                        We ship all US domestic orders within <b>
+                                                            5-10 business
+                                                            days!
+                                                        </b>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingTwo">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
+                                                        aria-expanded="false" aria-controls="flush-collapseTwo">
+                                                    <i class="fa-solid fa-shirt"></i>
+                                                    <h4>Materials</h4>
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                                                 aria-labelledby="flush-headingTwo"
+                                                 data-bs-parent="#accordionFlushExample">
+                                                <div class="accordion-body">
+                                                    <p>
+                                                        Running Shoes cushions your stride with soft foam to
+                                                        keep you running in comfort. Lightweight knit material wraps
+                                                        your
+                                                        foot in breathable support, while a minimalist design fits
+                                                        in just about anywhere your day takes you.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingThree">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
+                                                        aria-expanded="false" aria-controls="flush-collapseThree">
+
+                                                    <i class="fa-regular fa-heart"></i>
+                                                    <h4>Care Instructions</h4>
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseThree" class="accordion-collapse collapse"
+                                                 aria-labelledby="flush-headingThree"
+                                                 data-bs-parent="#accordionFlushExample">
+                                                <div class="accordion-body">
+                                                    <p>
+                                                        Use a soft damp cloth and a drop of mild soap to remove any
+                                                        haze. Air dry.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="main-widget">
+        <div class="container">
+            <div class="prod-tab-menu">
+                <ul class="menu__tabs">
+                    <li><a class="active" href="#item-1"> Description</a></li>
+                    <li><a href="#item-2"><i class="fa-regular fa-comment-dots"></i> Reviews</a></li>
+
+
+                </ul>
+                <section class="menu__wrapper">
+                    <article id="item-1" class="menu__item item-active">
+                        <h3>Product Description</h3>
+                        <p>
+                            Elegant and comfy, this embroidered A-line dress which has a round neck, and
+                            three-quarter sleeves is all you need to ensure your wardrobe is up to date. Browse
+                            through the latest collection of various ethnic dresses with cap sleeve sleeve designs
+                            to give a flawless desi look. Stay up to date with the great selection of attractive
+                            traditional ethnic dresses made with the perfect blend and modern style.
+                        </p>
+                        <ul>
+                            <li>
+                                <p>Type : A-Line Dresses</p>
+                            </li>
+                            <li>
+                                <p>Design : Embroidered</p>
+                            </li>
+                            <li>
+                                <p>Fabric : Cotton</p>
+                            </li>
+                            <li>
+                                <p>Length : Calf-Length</p>
+                            </li>
+                            <li>
+                                <p>Model Wears : Size S,has Height 5'7",Chest 33",and Waist 28"</p>
+                            </li>
+                        </ul>
+                    </article>
+
+                    <article id="item-2" class="menu__item">
+                        <h3>Contenido Dos</h3>
+                        <div class="product-review-body">
+                            <div class="blog-comment mt-0">
+                                <h4 class="heading">Comments (@Model.ProductComments.Count())</h4>
+                                @foreach (var item in Model.ProductComments)
+                                {
+                                    <div class="blog-comment-item">
+
+                                        <div class="blog-comment-content">
+                                            <div class="user-meta">
+                                                <h2 class="user-name">@item.Name</h2>
+                                                <span class="date">@item.CreatedDate.ToString("dd MMMM yyyy")</span>
+                                            </div>
+                                            <p class="user-comment">
+                                              @item.Message
+                                            </p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                AppUser user = userManager.Users.FirstOrDefault(m => m.UserName == User.Identity.Name);
+
+                                <div class="feedback-area">
+                                    <h2 class="heading">Leave a comment</h2>
+                                    <form class="feedback-form" method="post" asp-action="PostComment" asp-route-id="@Model.Id" asp-route-userId="@user.Id">
+                                        <div class="group-input">
+                                            <div class="form-field me-md-30 mb-30 mb-md-0">
+                                                <input 
+                                                    placeholder="Your Name*"
+                                                   class="input-field"
+                                                   value="@(user.FirstName + " " + user.LastName)" asp-for="ProductCommentVM.Name" readonly
+                                                   />
+                                            </div>
+                                            <div class="form-field">
+                                                <input   placeholder="Your Email*"
+                                                   class="input-field" value="@(user.Email)"
+                                                   asp-for="ProductCommentVM.Email" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="form-field mt-30">
+                                            <input type="text"  placeholder="Subject (Optinal)"
+                                               class="input-field"   asp-for="ProductCommentVM.Subject"  />
+                                        </div>
+                                        <div class="form-field mt-30">
+                                            <textarea  placeholder="Message"
+                                                  class="textarea-field" asp-for="ProductCommentVM.Message"></textarea>
+                                        </div>
+                                        <div class="button-wrap pt-5">
+                                            <button type="submit" value="submit"
+                                                class="btn btn-custom-size xl-size btn-my-primary" name="submit">
+                                                Post Comment
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
+                        
+                        </div>
+                    </article>
+
+
+
+
+
+                </section>
+                <div class="menu--shadow"></div>
+            </div>
+
+        </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+@section Script{
+
+    <script src="~/assets/js/product-details.js"></script>
+    }

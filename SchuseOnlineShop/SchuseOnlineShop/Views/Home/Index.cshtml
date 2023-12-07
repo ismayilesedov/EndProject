@@ -1,0 +1,517 @@
+﻿
+@model HomeVM
+@inject ILayoutService layout
+
+
+@section Links{
+
+    <link rel="stylesheet" href="~/assets/css/home/home.css">
+    <title>Home</title>
+} 
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<main>
+    <section id="main-slider">
+        <div class="slider">
+            <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach (var slider in Model.Sliders)
+                    {
+                        <div class="carousel-item active sldr">
+                        <img src="./assets/img/home/Slider/@slider.Image" class="d-block w-100" alt="...">
+                        <h4 class="title">@slider.Title.</h4>
+                        <h2 class="heading">@slider.Heading</h2>
+                        <h2 class="desc">@slider.Desc</h2>
+                        <button type="submit" class="shopNow-btn">SHOP NOW</button>
+                    </div>
+                    }
+                    
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="shopify-section" class="mt-5">
+        <div class="container">
+            <div class="row">
+
+                @foreach (var homeCategory in Model.HomeCategories.Take(2))
+                {
+
+                   
+                    <div class="col-lg-6 col-md-6 col-sm-1 mt-3 shopify-mob">
+                        <div class="banner-man geeks">
+                            <img src="~/assets/img/home/categoryImg/@homeCategory.Image" alt="">
+                            <div class="banner-description">
+                                <div class="title">@homeCategory.Name</div>
+                                <div class="text-button">
+                                    <a asp-controller="Shop" asp-action="Index" >Shop Now</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                }
+
+            </div>
+
+    </section>
+
+    <section id="services-wrapper" class="mt-5">
+        <div class="container">
+            <div class="service">
+                <div class="free-srvce">
+                    <i class="bi bi-rocket-takeoff"></i>
+                    <div class="service-description">
+                        <p class="title">Free Shipping world</p>
+                        <p class="dscrptn">UK Orders Only</p>
+                    </div>
+                </div>
+
+                <div class="support">
+                    <i class="bi bi-headset"></i>
+                    <div class="service-description">
+                        <p class="title">Best Online support</p>
+                        <p class="dscrptn">Hours: 8AM -11PM</p>
+                    </div>
+
+                </div>
+
+                <div class="delivery">
+                    <i class="bi bi-truck"></i>
+                    <div class="service-description">
+                        <p class="title">Worldwide Delivery</p>
+                        <p class="dscrptn">For Order Over $100</p>
+                    </div>
+                </div>
+
+                <div class="pig-bank">
+                    <i class="bi bi-piggy-bank"></i>
+                    <div class="service-description">
+                        <p class="title">Next Day Delivery</p>
+                        <p class="dscrptn">UK Orders Only</p>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+    </section>
+
+    <section id="recent-arrivals" class="mt-5">
+        <div class="container">
+            <div class="product-text">
+                <div class="title">
+                    <h2>@layout.GetSectionsHeaders()["RecentProductTitle"]</h2>
+                </div>
+                <div class="desc">
+                    <p>@layout.GetSectionsHeaders()["RecentProductDesc"]</p>
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var product in Model.Products.OrderByDescending(m=>m.CreatedDate).Take(12))
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="card" data-id="@product.Id" style="width: 18rem;">
+                            <div class="produc-imgs">
+                                <a asp-controller="Shop" asp-action="ProductDetail" asp-route-id="@product.Id">
+                                    <img src="~/assets/img/shoes/product-img/@product.ProductImages.Where(p=>p.IsMain).FirstOrDefault().ImgName" class="card-img-top basic" alt="...">
+                                    <img src="~/assets/img/shoes/product-img/@product.ProductImages.Where(p=>p.IsHover).FirstOrDefault().ImgName" class="card-img-top top" alt="...">
+                                </a>
+
+                            </div>
+                            <div class="discount">
+                                <span class="badge">sale</span>
+                            </div>
+
+                            <div class="product-hover d-flex mt-3">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <button type="submit">
+                                        <a class="add-to-wishlist-btn" data-id="@product.Id">
+                                            <i class="fa-regular fa-bookmark"></i>
+                                        </a>
+                                    </button>
+                                }else
+                                {
+                                    <button type="submit" data-id="@product.Id">
+                                        <a asp-controller="Account" asp-action="Login">
+                                            <i class="fa-regular fa-bookmark"></i>
+                                        </a>
+                                    </button>
+                                }
+                               
+                                <button type="submit" class="d-lg-block d-none">
+                                    <a class="add-to-eye-btn" data-id="@product.Id">
+                                       <i class="fa-regular fa-eye"></i>
+                                    </a>
+                                </button>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <button  type="submit">
+                                        <a class="add-to-cart-btn" data-id="@product.Id">
+                                            <i class="bi bi-bag"></i>
+                                        </a>
+                                    </button>
+                                }else
+                                {
+                                    <button type="submit">
+                                        <a asp-controller="Account" asp-action="Login">
+                                            <i class="bi bi-bag"></i>
+                                        </a>
+                                    </button>
+                                }
+                            
+                            </div>
+                            <div class="star-product">
+                                @for (int i = 0; i < product.Rating; i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                @for (int c = 0; c < 5 - product.Rating; c++)
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            
+                        
+                            </div>
+                            <div class="card-body">
+                                <a asp-controller="Shop" asp-action="ProductDetail" asp-route-id="@product.Id">
+                                    <p>@product.Name</p>
+                                </a>
+
+                                <p class="card-text price"> $@product.DiscountPrice</p>
+                                <del>$@product.Price</del>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            <div class="mini-modal">
+                <div class="product-modal d-none">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="img">
+                                    <img src="" alt="">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="delete-icon">
+                                    <a href=""><i class="fa-solid fa-xmark"></i></a>
+                                </div>
+                                <div class="prod-tittle">
+                                    <h2></h2>
+                                </div>
+                                <div class="price-discount">
+                                    <div class="discount">
+                                        <del></del>
+                                    </div>
+                                    <div class="pro-price">
+                                        <p></p>
+                                    </div>
+                                </div>
+
+                                <div class="border">
+                                </div>
+                                <div class="text3">
+                                    <p></p>
+                                </div>
+                                <div class="pro-description">
+                                    <p>
+
+                                    </p>
+                                </div>
+
+                                <div class="pro-category">
+                                    <div class="category-name">
+                                        <span class="type">Category  :</span>
+                                        <span class="type-name">
+                                            :
+                                        </span>
+                                    </div>
+
+                                    <div class="vendor-name">
+                                        <span class="type">Brand  :</span>
+                                        <span class="type-name">
+                                            :
+                                        </span>
+                                    </div>
+                                    <div class="sku-name">
+                                        <span class="type">SKU:</span>
+                                        <span class="type-name">
+                                            :
+                                        </span>
+                                    </div>
+
+                                    <div class="category-name">
+                                        <span class="type">Size:</span>
+                                        <select id="size">
+                                            <option value="39">36</option>
+                                            <option value="37">37</option>
+                                            <option value="38">38</option>
+                                            <option value="39">39</option>
+                                            <option value="40">40</option>
+                                            <option value="41">41</option>
+                                            <option value="42">42</option>
+                                            <option value="43">43</option>
+                                            <option value="44">44</option>
+                                        </select>
+
+                                    </div>
+
+
+                                    <div class="input-icon">
+                                        <div class="inputs">
+                                            <div class="number">
+                                                <span class="minus">-</span>
+                                                <input type="text" value="1" />
+                                                <span class="plus">+</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="box">
+                                        <button class="button">
+                                            <span>Add To Cart</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="prod-detail">
+                                        <a asp-controller="Shop" asp-action="ProductDetail" asp-route-id="">View Full Product Details</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <section id="background-img" class="mt-5" style="background-image:url(../../assets/img/home/Background/@layout.GetSettings()["BackgroundImage"]">
+        <div class="multicolumn-content">
+        </div>
+    </section>
+
+    <section id="trending-product" class="mt-5">
+        <div class="container">
+            <div class="product-text">
+                <div class="title">
+                    <h2>@layout.GetSectionsHeaders()["TrendingProductTitle"]</h2>
+                </div>
+                <div class="desc">
+                    <p>@layout.GetSectionsHeaders()["RecentProductDesc"]</p>
+                </div>
+            </div>
+            <section class="slider">
+                <button class="slider__control prev"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="slider__control next"><i class="fa-solid fa-chevron-right"></i></button>
+                <div class="slider__container" data-multislide="false" data-step="4">
+                    @foreach (var pro in Model.Products.OrderByDescending(m=>m.Rating))
+                    {
+                        <div class="slider__item">
+                            <div class="col-3">
+                                <div class="card">
+                                    <div class="produc-imgs">
+                                        <a asp-controller="Shop" asp-action="ProductDetail" asp-route-id="@pro.Id">
+                                            <img src="~/assets/img/shoes/product-img/@pro.ProductImages.Where(p=>p.IsMain).FirstOrDefault().ImgName" class="card-img-top basic" alt="...">
+
+                                            <img src="~/assets/img/shoes/product-img/@pro.ProductImages.Where(p=>p.IsHover).FirstOrDefault().ImgName" class="card-img-top top" alt="...">
+
+                                        </a>
+
+                                    </div>
+
+
+                                    <div class="product-hover d-flex">
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <button type="submit">
+                                                <a class="add-to-wishlist-btn" data-id="@pro.Id">
+                                                    <i class="fa-regular fa-bookmark"></i>
+                                                </a>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" data-id="@pro.Id">
+                                                <a asp-controller="Account" asp-action="Login">
+                                                    <i class="fa-regular fa-bookmark"></i>
+                                                </a>
+                                            </button>
+                                        }
+                                        <button type="submit" class="d-lg-block d-none">
+                                            <a class="add-to-eye-btn" data-id="@pro.Id">
+                                                <i class="fa-regular fa-eye"></i>
+                                            </a>
+                                        </button>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <button type="submit">
+                                                <a class="add-to-cart-btn" data-id="@pro.Id">
+                                                    <i class="bi bi-bag"></i>
+                                                </a>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit">
+                                                <a asp-controller="Account" asp-action="Login">
+                                                    <i class="bi bi-bag"></i>
+                                                </a>
+                                            </button>
+                                        }
+                                    </div>
+                                    <div class="star-product">
+                                        @for (int i = 0; i < pro.Rating; i++)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        @for (int c = 0; c < 5 - pro.Rating; c++)
+                                        {
+                                            <i class="bi bi-star"></i>
+                                        }
+                                    </div>
+                                    <div class="card-body">
+                                        <a href="">
+                                            <p>@pro.Name</p>
+                                        </a>
+
+                                        <p class="card-text price">$@pro.DiscountPrice</p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                   
+
+
+                </div>
+            </section>
+
+
+
+        </div>
+
+
+    </section>
+
+
+    <section id="product-blog">
+
+        <div class="blog">
+            <div class="container">
+                <div class="product-text">
+                    <div class="title">
+                        <h2>@layout.GetSectionsHeaders()["BlogTitle"]</h2>
+                    </div>
+                    <div class="desc">
+                        <p>@layout.GetSectionsHeaders()["BlogDesc"]</p>
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach (var blog in Model.Blogs.OrderByDescending(m=>m.CreatedDate).Take(3))
+                    {
+                        <div class="col-lg-4 col-md-6">
+                       
+                            <div class="blog-card">
+                                <div class="blog-img">
+                                    <a href=""><img src="./assets/img/home/blog/@blog.Image" alt=""></a>
+                                </div>
+                                <div class="create-time">
+                                    <span>@blog.CreatedDate.ToString("dd MMMM yyyy")</span>
+                                </div>
+                                <div class="blog-title">
+                                    <a href="">@blog.Title</a>
+                                </div>
+                                <div class="blog-description">
+                                    <p>
+                                        @blog.Description.Substring(0,35) ...
+                                    </p>
+                                </div>
+                                <div class="blog-button">
+                                    <a href="">READ MORE</a>
+                                </div>
+
+                            </div>
+
+                    </div>
+                    }
+
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="newsletter">
+        <div class="container">
+            <div class="subscribe">
+
+                <div class="newsletter-wrapper">
+                    <h2>Subscribe Newsletter</h2>
+                    <p>
+                        Sign up our newsletter & receive <br>
+                        <a href="">15% OFF</a> your first purchase
+                    </p>
+                </div>
+                <div class="news-input">
+                    <input type="text" placeholder="Your email">
+                    <button type="submit">Subscribe</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="brand">
+        <div class="container">
+            <section class="customer-logos slider">
+                @foreach (var brandLogo in Model.BrandLogos)
+                {
+                    <div class="slide"><img src="./assets/img/home/brandlogo/@brandLogo.Image"></div>
+
+                }
+             
+
+            </section>
+        </div>
+    </section>
+</main>
+
+
+@section Script{
+
+    <script src="~/assets/js/home.js"></script>
+
+   }

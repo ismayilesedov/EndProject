@@ -1,0 +1,253 @@
+﻿
+@inject UserManager<AppUser> userManager;
+@inject ILayoutService layout;
+
+
+
+
+<header>
+    <section id="page-navbar" class="d-lg-block d-none">
+        <div class="up-navbar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="dropdown d-none">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Dropdown button
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="text-header">
+                            <p>@Model.GetSettingDatas["HeaderText"]</p>
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="account-basket">
+                            <a class="nav-link dropdown-toggle language basic" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <span>My Account</span>
+                            </a>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <ul class="dropdown-menu language">
+                                    <li>
+                                        <a class="dropdown-item eng">
+                                            <span>@User.Identity.Name</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <form method="post" asp-controller="Account" asp-action="Logout" asp-route-userId="@userManager.Users.Where(u=>u.UserName==User.Identity.Name).FirstOrDefault().Id">
+                                            <button type="submit" class="dropdown-item">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            }
+                            else
+                            {
+                                <ul class="dropdown-menu language">
+                                    <li>
+                                        <a class="dropdown-item eng" asp-controller="Account" asp-action="Login">
+                                            <span>Login</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            }
+                         
+
+                            <div class="line"></div>
+                            <div class="icon">
+                                <a asp-controller="Cart" asp-action="Index"><i class="fa-solid fa-bag-shopping"></i></a>
+                                <div class="basket-count">
+                                    <span class="count-bask">@Model.BasketCount</span>
+                                    
+                                </div>
+                                <a class="wishlist-nav" asp-controller="Wishlist" asp-action="Index">
+                                    <i class="fa-regular fa-bookmark"></i>
+                                </a>
+                                <div class="basket-count">
+                                    <span class="count-whislist">@Model.WishlistCount</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="header-service">
+                            <div class="icon">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <div class="service">
+                                <h6>Need Help?</h6>
+                                <p>@Model.GetSettingDatas["Mobil"]</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="header-logo">
+                            <img src="~/assets/img/logo/@Model.GetSettingDatas["Logo"]" alt="">
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="search">
+                            <form class="hm-searchbox">
+                                <input class="input-search"
+                                type="text"
+                                name="Search..."
+                                value="Search..."
+                                onblur="if(this.value==''){this.value='Search...'}"
+                                onfocus="if(this.value=='Search...'){this.value=''}"
+                                placeholder="Search Product Here...">
+                                <div class="search-icon">
+                                    <button class="search-btn" type="submit">
+                                        <i class="fa-solid fa-magnifying-glass fa-2xs"></i>
+                                    </button>
+                                </div>
+                            </form>
+                           
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="down-navbar">
+            <ul>
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-controller="Shop" asp-action="Index">Shoes</a></li>
+                @foreach (var item in layout.GetCategorysByName().Result)
+                {
+                    <li><a asp-controller="Shop" asp-action="Index" asp-route-categoryId="@item.Id">@item.Name</a></li>
+                }   
+                
+                <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
+                <li><a asp-controller="Blog" asp-action="Index">Blog</a></li>
+                <li><a asp-controller="About" asp-action="Index">About</a></li>
+            </ul>
+        </div>
+    </section>
+    <section id="mobil-navbar" class="d-lg-none d-block">
+
+        <div class="up">
+            <div class="nvb d-flex">
+                <div class="col-12">
+                    <div class="mobil-down-navbar">
+                        <div class="account-mob-icon">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <span>@User.Identity.Name</span>
+                                <form method="post" asp-controller="Account" asp-action="Logout" asp-route-userId="@userManager.Users.Where(u=>u.UserName==User.Identity.Name).FirstOrDefault().Id">
+                                    <button type="submit" class="dropdown-item">
+                                        <span>Logout</span>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login"><i class="fa-regular fa-user"></i></a>
+
+                            }
+                        </div>
+                        <div class="line"></div>
+                        <div class="basket-mob-icon">
+                            <a asp-controller="Cart" asp-action="Index"><i class="fa-solid fa-basket-shopping"></i></a>
+                            <div class="basket-count">
+                                <span class="count-bask">@Model.BasketCount</span>
+                            </div>
+                            <a class="wishlist-nav" asp-controller="Wishlist" asp-action="Index">
+                                <i class="fa-regular fa-bookmark"></i>
+                            </a>
+                            <div class="basket-count">
+                                <span class="count-whislist">@Model.WishlistCount</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="down">
+
+            <div class="sidebar-mob-navbar">
+                <div class="col-3">
+                    <div class="hamburger-icon">
+                        <i class="fa-solid fa-bars"></i>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="nav-logo">
+                        <img src="~/assets/img/logo/@Model.GetSettingDatas["Logo"]" alt="">
+                    </div>
+                </div>
+
+
+                <div class="col-4">
+                    <div class="search-mob-icon">
+                        <div class="search-box">
+                            <form class="hm-searchbox">
+                                <input class="input-search"
+                                value="Search..."
+                                type="text"
+                                onblur="if(this.value==''){this.value='Search...'}"
+                                onfocus="if(this.value=='Search...'){this.value=''}"
+                                autocomplete="off"
+                                placeholder="Search here" />
+                            </form>
+                        
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="content-area">
+                <i class="fa-solid fa-xmark iconx"></i>
+                <div class="content-area-center">
+                    <ul>
+                        <li>
+                            <a asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Shop" asp-action="Index">Shoes</a>
+                        </li>
+                        @foreach (var item in layout.GetCategorysByName().Result)
+                        {
+                            <li><a asp-controller="Shop" asp-action="Index" asp-route-categoryId="@item.Id">@item.Name</a></li>
+                        }
+                        <li>
+                            <a asp-controller="Contact" asp-action="Index">Contact</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Blog" asp-action="Index">Blog</a>
+                        </li>
+                        <li><a asp-controller="About" asp-action="Index">About</a></li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</header>
+
+
+
